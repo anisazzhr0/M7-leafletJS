@@ -13,6 +13,15 @@
     
     <!-- Leaflet Control Geocoder CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+    <!-- Leaflet Routing Machine CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <style>
+        #map {
+            height: 720px;
+            width: 100%;
+        }
+    </style>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -89,6 +98,9 @@
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
     
+    <!-- Leaflet Routing Machine JS -->
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
     <!-- Leaflet Control Geocoder -->
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     
@@ -128,17 +140,59 @@
             "OpenStreetMap": osm
         };
         
+        // Titik awal dan tujuan
+        const startPoint = L.latLng(-7.761274, 110.378789);
+        const waypoints = [
+			L.latLng(-7.763890, 110.372783),
+			L.latLng(-7.770254, 110.377812), 
+            L.latLng(-7.782930, 110.367055)  
+        ];
+        // Tambahkan rute menggunakan Leaflet Routing Machine
+        L.Routing.control({
+            waypoints: [startPoint, ...waypoints],
+            routeWhileDragging: true,
+            show: true, // Menampilkan panel rute
+            addWaypoints: false, // Tidak mengizinkan penambahan waypoint
+            draggableWaypoints: false, // Tidak mengizinkan drag waypoint
+            fitSelectedRoutes: true, // Otomatis zoom ke rute yang dipilih
+			createMarker: function() {
+				// Kembalikan null untuk tidak membuat marker
+				return null;
+            }
+        }).addTo(map);
+
         var loc_route = L.icon({
 		iconUrl: 'https://img.icons8.com/?size=100&id=U1cbNtgDXO2m&format=png&color=000000',
         iconSize: [50, 50], // size of the icon
         });
+        var city = L.icon({
+		iconUrl: 'https://img.icons8.com/?size=100&id=104084&format=png&color=000000',
+        iconSize: [50, 50], // size of the icon
+        });
+        var hotel = L.icon({
+		iconUrl: 'https://img.icons8.com/?size=100&id=AVe9YeyAXTql&format=png&color=000000',
+        iconSize: [50, 50], // size of the icon
+        });
+		var food = L.icon({
+		iconUrl: 'https://img.icons8.com/?size=100&id=12869&format=png&color=000000',
+        iconSize: [50, 50], // size of the icon
+        });
+        L.marker([-7.763890, 110.372783], {icon: loc_route}).bindPopup('<b>Teknik Geodesi UGM</b><br>Departemen di Teknik UGM yang berfokus pada pemetaan dan geospasial.').addTo(map);
+        L.marker([-7.761274, 110.378789], {icon: loc_route}).bindPopup('<b>Kos Griya Tirta</b><br>Kos Penginapan mahasiswa dengan fasilitas lengkap dan harga terjangkau.').addTo(map);
+        L.marker([-7.770254, 110.377812], {icon: loc_route}).bindPopup('<b>Graha Sabha Pramana</b><br>Aula utama UGM untuk berbagai acara akademik dan publik.').addTo(map);
+        L.marker([-7.782930, 110.367055], {icon: loc_route}).bindPopup('<b>Tugu Jogja</b><br>Landmark ikonik kota Yogyakarta yang penuh sejarah.').addTo(map);
+        L.marker([-7.773763, 110.368348], {icon: hotel}).bindPopup('<b>Hotel Tentrem</b><br>Hotel bintang lima dengan layanan eksklusif.').addTo(map);
+        L.marker([-7.762498, 110.372264], {icon: hotel}).bindPopup('<b>Taman Melati</b><br>Apartemen yang lokasinya strategis bagi mahasiswa.').addTo(map);
+        L.marker([-7.763492, 110.377171], {icon: hotel}).bindPopup('<b>Asrama Kinanti 1</b><br>Asrama khusus mahasiswa UGM.').addTo(map);
+        L.marker([-7.762529, 110.379671], {icon: food}).bindPopup('<b>McDonalds</b><br>Restoran cepat saji terkenal dengan menu burger dan ayam goreng.').addTo(map);
+        L.marker([-7.775932, 110.374668], {icon: food}).bindPopup('<b>KFC</b><br>Restoran cepat saji spesialis ayam goreng crispy.').addTo(map);
 
         // Menambahkan Marker
-        var gunkid = L.marker([-8.030535, 110.616896], {icon: loc_route}).bindPopup('Gunung Kidul');
-        var sleman = L.marker([-7.732561, 110.402374], {icon: loc_route}).bindPopup('Sleman');
-        var jogja = L.marker([-7.801407, 110.364742], {icon: loc_route}).bindPopup('Kota Yogyakarta');
-        var kupro = L.marker([-7.826697, 110.164081], {icon: loc_route}).bindPopup('Kulon Progo');
-        var mbantul = L.marker([-7.874852, 110.325532], {icon: loc_route}).bindPopup('Bantul');
+        var gunkid = L.marker([-8.030535, 110.616896], {icon: city}).bindPopup('Gunung Kidul');
+        var sleman = L.marker([-7.732561, 110.402374], {icon: city}).bindPopup('Sleman');
+        var jogja = L.marker([-7.801407, 110.364742], {icon: city}).bindPopup('Kota Yogyakarta');
+        var kupro = L.marker([-7.826697, 110.164081], {icon: city}).bindPopup('Kulon Progo');
+        var mbantul = L.marker([-7.874852, 110.325532], {icon: city}).bindPopup('Bantul');
         
         var jogja = L.layerGroup([gunkid, kupro, jogja, mbantul, sleman]);
         
@@ -305,7 +359,7 @@
             return new L.Control.ExportControl(opts);
         };
         
-        L.control.exportControl({ position: 'topright' }).addTo(map);
+        L.control.exportControl({ position: 'topleft' }).addTo(map);
 
         L.geoJSON(jogjageojson,{
             style: function(feature) {
